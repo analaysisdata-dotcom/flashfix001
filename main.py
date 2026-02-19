@@ -1,3 +1,4 @@
+import requests
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -12,6 +13,19 @@ app.add_middleware(
     allow_methods=["*"], 
     allow_headers=["*"]
 )
+
+# --- 📢 TELEGRAM CONFIG ---
+# Yahan apna Token aur ID dalein (BotFather aur userinfobot se lekar)
+TELEGRAM_BOT_TOKEN = "YOUR_BOT_TOKEN_HERE" 
+TELEGRAM_CHAT_ID = "YOUR_CHAT_ID_HERE"
+
+def send_to_telegram(message):
+    try:
+        url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+        payload = {"chat_id": TELEGRAM_CHAT_ID, "text": message}
+        requests.post(url, json=payload)
+    except Exception as e:
+        print(f"Telegram Error: {e}")
 
 DB_FILE = "raza_electrical_db.json"
 
@@ -30,22 +44,22 @@ class Booking(BaseModel):
     lon: float = 0.0
     status: str = "Pending"
     assigned_to: str = ""
-    final_amount: float = 0.0
-    payment_mode: str = ""
-    commission_due: float = 0.0
 
 class Review(BaseModel):
+    id: int = 0
     name: str
     comment: str
 
 def get_db():
     if not os.path.exists(DB_FILE): 
-        return {"workers": [], "bookings": [], "reviews": []}
+        return {"workers": [], "bookings": [], "reviews": [], "pending_workers": []}
     try:
         with open(DB_FILE, "r") as f: 
-            return json.load(f)
+            data = json.load(f)
+            if "pending_workers" not in data: data["pending_workers"] = []
+            return data
     except: 
-        return {"workers": [], "bookings": [], "reviews": []}
+        return {"workers": [], "bookings": [], "reviews": [], "pending_workers": []}
 
 def save_db(data):
     with open(DB_FILE, "w") as f: 
@@ -55,73 +69,51 @@ def save_db(data):
 def get_data():
     return get_db()
 
-@app.post("/add-worker")
-def add_worker(w: Worker):
+# --- WORKER REQUEST & NOTIFICATION ---
+@app.post("/add-worker-request")
+def add_worker_request(w: Worker):
     db = get_db()
-    db["workers"].append(w.dict())
+    db["pending_workers"].append(w.dict())
     save_db(db)
+    
+    msg = f"👷 NAYA WORKER REQUEST!\n\n👤 Name: {w.name}\n📞 Phone: {w.phone}\n🛠 Skill: {w.skill}\n💰 UPI: {w.upi}\n\nSir, Admin panel khol kar Approve karein."
+    send_to_telegram(msg)
     return {"status": "Success"}
 
-@app.delete("/delete-worker/{phone}")
-def delete_worker(phone: str):
+@app.post("/approve-worker/{phone}")
+def approve_worker(phone: str):
     db = get_db()
-    initial_count = len(db["workers"])
-    db["workers"] = [w for w in db["workers"] if w["phone"] != phone]
-    if len(db["workers"]) < initial_count:
+    worker = next((w for w in db["pending_workers"] if w["phone"] == phone), None)
+    if worker:
+        db["workers"].append(worker)
+        db["pending_workers"] = [w for w in db["pending_workers"] if w["phone"] != phone]
         save_db(db)
-        return {"status": "Success", "message": "Worker delete ho gaya"}
-    return {"status": "Error", "message": "Worker nahi mila"}
+        return {"status": "Success"}
+    return {"status": "Error"}
 
+# --- BOOKING & NOTIFICATION ---
 @app.post("/book")
 def book(b: Booking):
     db = get_db()
     b.id = len(db["bookings"]) + 1
     db["bookings"].append(b.dict())
     save_db(db)
+    
+    msg = f"💰 NAYI BOOKING!\n\n🛠 Service: {b.service}\n📍 Address: {b.address}\n📞 Customer: {b.phone}"
+    send_to_telegram(msg)
     return {"status": "Success"}
 
 @app.post("/add-review")
 def add_review(r: Review):
     db = get_db()
-    if "reviews" not in db:
-        db["reviews"] = []
+    r.id = len(db.get("reviews", [])) + 1
     db["reviews"].append(r.dict())
     save_db(db)
     return {"status": "Success"}
 
-@app.post("/update-job/{job_id}/{worker_phone}/{status}")
-def update_job(job_id: int, worker_phone: str, status: str):
+@app.delete("/delete-review/{review_id}")
+def delete_review(review_id: int):
     db = get_db()
-    for j in db["bookings"]:
-        if j["id"] == job_id:
-            j["status"] = status
-            j["assigned_to"] = worker_phone
-            save_db(db)
-            return {"status": "Success"}
-    return {"status": "Error"}
-
-@app.post("/complete-job/{job_id}/{amount}/{mode}")
-def complete_job(job_id: int, amount: float, mode: str):
-    db = get_db()
-    for j in db["bookings"]:
-        if j["id"] == job_id:
-            j["status"] = "Completed"
-            j["final_amount"] = amount
-            j["payment_mode"] = mode
-            j["commission_due"] = (amount * 0.10) if mode == "Cash" else 0
-            save_db(db)
-            return {"status": "Success"}
-    return {"status": "Error"}
-
-@app.post("/clear-ledger/{worker_phone}")
-def clear_ledger(worker_phone: str):
-    db = get_db()
-    found = False
-    for job in db["bookings"]:
-        if job.get("assigned_to") == worker_phone and job.get("status") == "Completed":
-            job["status"] = "Settled"
-            found = True
-    if found:
-        save_db(db)
-        return {"status": "Success"}
-    return {"status": "Error"}
+    db["reviews"] = [r for r in db["reviews"] if r.get("id") != review_id]
+    save_db(db)
+    return {"status": "Success"}
