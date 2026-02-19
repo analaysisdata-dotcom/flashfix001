@@ -34,7 +34,6 @@
         .point-icon { color: var(--green); font-weight: bold; }
 
         /* FORMS & MODALS */
-        .form-group { margin-bottom: 15px; }
         input, textarea { width: 100%; padding: 16px; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 12px; box-sizing: border-box; font-size: 16px; margin-bottom: 10px; }
         .btn-action { width: 100%; padding: 18px; background: var(--gold); border: none; border-radius: 15px; font-weight: 800; cursor: pointer; color: black; font-size: 16px; box-shadow: 0 10px 20px rgba(255, 215, 0, 0.2); }
         
@@ -70,6 +69,21 @@
             <div class="card" onclick="openDetails('Cleaning')"><i>🧹</i><b>Cleaning</b><span>Deep Home Clean</span></div>
         </div>
 
+        <div style="margin: 20px; padding: 20px; background: #FFF9C4; border-radius: 15px; border: 2px dashed #FBC02D; text-align: center; font-family: sans-serif;">
+            <h3 style="margin: 0; color: #f57f17;">👷 Kaam Chahiye? (Join FlashFix)</h3>
+            <p style="font-size: 14px; color: #5d4037; margin: 10px 0;">
+                Agar aap Electrician hain aur hamare saath judkar kaam karna chahte hain, toh abhi Raza Sir ko contact karein!
+            </p>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <a href="tel:9771303958" style="background: #1976D2; color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 14px;">
+                    📞 Call Sir
+                </a>
+                <a href="https://wa.me/9771303958?text=Sir, mujhe FlashFix mein as a worker join hona hai." style="background: #25D366; color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 14px;">
+                    💬 WhatsApp
+                </a>
+            </div>
+        </div>
+
         <div style="padding: 20px; border-top: 1px solid #222;">
             <h3 style="color: var(--gold); font-size: 14px; text-transform: uppercase;">Customer Reviews</h3>
             <div id="reviews-list">Loading...</div>
@@ -85,12 +99,10 @@
                 <h1 id="det-title" style="margin:0; font-size:28px;">Service</h1>
                 <div id="det-price" style="font-size:22px; font-weight:bold; color:var(--green);">₹199</div>
             </div>
-            
             <div class="points-box">
                 <h4 style="margin-top:0; color:var(--gold);">Expert Highlights</h4>
                 <div id="det-points"></div>
             </div>
-
             <button class="btn-action" onclick="goToBooking()">BOOK THIS SERVICE</button>
         </div>
     </div>
@@ -128,12 +140,12 @@
     const API = "https://flashfix001.onrender.com";
     
     const serviceData = {
-        'Electrician': { icon: '💡', price: 'Starts ₹149', points: ['Short circuit & Fuse repair', 'Ceiling fan & Light fitting', 'MCB & Socket installation', 'Safe background-verified experts'] },
-        'Plumber': { icon: '🚰', price: 'Starts ₹199', points: ['Tap leak & Tank cleaning', 'Toilet & Basin blockage fix', 'Pipe replacement & fitting', 'Standardized rate card'] },
-        'AC Repair': { icon: '❄️', price: 'Starts ₹499', points: ['Jet cleaning technology', 'Gas leak detection & refill', 'Cooling & Compressor health check', 'No-mess service promise'] },
-        'Carpenter': { icon: '🪑', price: 'Starts ₹249', points: ['Door locks & Hinge repair', 'Furniture assembly & fix', 'Drawer & Cupboard repair', 'High-quality spare parts'] },
-        'Painter': { icon: '🖌️', price: 'Starts ₹999', points: ['Wall putty & Texture work', 'Premium Asian Paints finish', 'Waterproofing solutions', 'Dust-free painting experience'] },
-        'Cleaning': { icon: '🧹', price: 'Starts ₹399', points: ['Deep kitchen & Bathroom clean', 'Sofa & Carpet shampooing', 'Full home disinfection', 'Eco-friendly cleaning agents'] }
+        'Electrician': { icon: '💡', price: 'Visting Charge ₹99', points: ['Short circuit & Fuse repair', 'Ceiling fan & Light fitting', 'MCB & Socket installation', 'Safe background-verified experts'] },
+        'Plumber': { icon: '🚰', price: 'Visting Charge ₹99', points: ['Tap leak & Tank cleaning', 'Toilet & Basin blockage fix', 'Pipe replacement & fitting', 'Standardized rate card'] },
+        'AC Repair': { icon: '❄️', price: 'Visting Charge ₹99', points: ['Jet cleaning technology', 'Gas leak detection & refill', 'Cooling & Compressor health check', 'No-mess service promise'] },
+        'Carpenter': { icon: '🪑', price: 'Visting Charge ₹99', points: ['Door locks & Hinge repair', 'Furniture assembly & fix', 'Drawer & Cupboard repair', 'High-quality spare parts'] },
+        'Painter': { icon: '🖌️', price: 'Visting Charge ₹99', points: ['Wall putty & Texture work', 'Premium Asian Paints finish', 'Waterproofing solutions', 'Dust-free painting experience'] },
+        'Cleaning': { icon: '🧹', price: 'Visting Charge ₹99', points: ['Deep kitchen & Bathroom clean', 'Sofa & Carpet shampooing', 'Full home disinfection', 'Eco-friendly cleaning agents'] }
     };
 
     let selectedService = "";
@@ -183,9 +195,10 @@
 
     async function loadReviews() {
         try {
-            const res = await fetch(`${API}/get-reviews`);
+            const res = await fetch(`${API}/get-data`);
             const data = await res.json();
-            document.getElementById('reviews-list').innerHTML = data.reverse().slice(0, 3).map(r => `
+            const reviews = data.reviews || [];
+            document.getElementById('reviews-list').innerHTML = reviews.reverse().slice(0, 3).map(r => `
                 <div style="border-bottom:1px solid #222; padding: 15px 0;">
                     <span style="color:var(--gold)">★★★★★</span><br>
                     <p style="margin:5px 0; font-size:13px; font-style:italic; color:#ccc;">"${r.comment}"</p>
