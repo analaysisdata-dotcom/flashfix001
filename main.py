@@ -5,7 +5,6 @@ import json, os
 
 app = FastAPI()
 
-# CORS settings taaki frontend (HTML) backend se baat kar sake
 app.add_middleware(
     CORSMiddleware, 
     allow_origins=["*"], 
@@ -14,7 +13,6 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-# Database file ka naam
 DB_FILE = "raza_electrical_db.json"
 
 class Worker(BaseModel):
@@ -35,6 +33,10 @@ class Booking(BaseModel):
     final_amount: float = 0.0
     payment_mode: str = ""
     commission_due: float = 0.0
+
+class Review(BaseModel):
+    name: str
+    comment: str
 
 def get_db():
     if not os.path.exists(DB_FILE): 
@@ -60,14 +62,11 @@ def add_worker(w: Worker):
     save_db(db)
     return {"status": "Success"}
 
-# --- ✅ WORKER DELETE KARNE KA FUNCTION (FIXED) ---
 @app.delete("/delete-worker/{phone}")
 def delete_worker(phone: str):
     db = get_db()
     initial_count = len(db["workers"])
-    # Jis worker ka phone match karega use chhod kar baaki sab ko rakh lo
     db["workers"] = [w for w in db["workers"] if w["phone"] != phone]
-    
     if len(db["workers"]) < initial_count:
         save_db(db)
         return {"status": "Success", "message": "Worker delete ho gaya"}
@@ -78,6 +77,15 @@ def book(b: Booking):
     db = get_db()
     b.id = len(db["bookings"]) + 1
     db["bookings"].append(b.dict())
+    save_db(db)
+    return {"status": "Success"}
+
+@app.post("/add-review")
+def add_review(r: Review):
+    db = get_db()
+    if "reviews" not in db:
+        db["reviews"] = []
+    db["reviews"].append(r.dict())
     save_db(db)
     return {"status": "Success"}
 
