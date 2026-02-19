@@ -10,7 +10,7 @@
         .app { width: 100%; max-width: 450px; background: var(--bg); min-height: 100vh; position: relative; }
 
         /* HEADER */
-        .header { padding: 25px 20px; background: linear-gradient(to bottom, #1a1a1a, var(--bg)); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #222; }
+        .header { padding: 25px 20px; background: linear-gradient(to bottom, #1a1a1a, var(--bg)); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; }
         .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -1px; }
         .header span { color: var(--gold); }
 
@@ -26,19 +26,13 @@
         .card b { font-size: 16px; display: block; }
         .card span { font-size: 12px; color: #777; }
 
-        /* DESCRIPTION PAGE */
-        .service-banner { height: 180px; background: linear-gradient(45deg, #111, #222); display: flex; align-items: center; justify-content: center; font-size: 60px; border-radius: 0 0 30px 30px; }
-        .content-area { padding: 25px; }
-        .points-box { background: #111; padding: 20px; border-radius: 15px; margin-bottom: 20px; border: 1px solid #222; }
-        .point { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 14px; color: #ccc; }
-        .point-icon { color: var(--green); font-weight: bold; }
-
-        /* FORMS & MODALS */
-        input, textarea { width: 100%; padding: 16px; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 12px; box-sizing: border-box; font-size: 16px; margin-bottom: 10px; }
+        /* FORMS & INPUTS */
+        input, textarea, select { width: 100%; padding: 16px; background: #1a1a1a; border: 1px solid #333; color: white; border-radius: 12px; box-sizing: border-box; font-size: 16px; margin-bottom: 10px; }
         .btn-action { width: 100%; padding: 18px; background: var(--gold); border: none; border-radius: 15px; font-weight: 800; cursor: pointer; color: black; font-size: 16px; box-shadow: 0 10px 20px rgba(255, 215, 0, 0.2); }
         
-        #review-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 200; justify-content: center; align-items: center; }
-        .modal-box { background: #111; padding: 30px; border-radius: 20px; width: 85%; border: 1px solid var(--gold); }
+        /* MODALS */
+        #terms-modal, #review-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 300; justify-content: center; align-items: center; }
+        .modal-box { background: #111; padding: 25px; border-radius: 20px; width: 85%; max-height: 75vh; overflow-y: auto; border: 1px solid var(--gold); }
     </style>
 </head>
 <body>
@@ -47,9 +41,10 @@
 
     <div id="home" class="page active">
         <div class="header">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h1>FLASH<span>FIX</span></h1>
-                <button onclick="showMyBookings()" style="background:none; border:1px solid #333; color:white; padding:8px 15px; border-radius:20px; font-size:12px; cursor:pointer;">Bookings</button>
+            <h1>FLASH<span>FIX</span></h1>
+            <div style="display: flex; gap: 8px;">
+                <button onclick="showPage('worker-reg')" style="background:#222; color:var(--gold); border:1px solid var(--gold); padding:8px 12px; border-radius:15px; font-size:12px; font-weight:bold; cursor:pointer;">Join Us</button>
+                <button onclick="showMyBookings()" style="background:none; border:1px solid #333; color:white; padding:8px 12px; border-radius:15px; font-size:12px; cursor:pointer;">Bookings</button>
             </div>
         </div>
 
@@ -70,19 +65,18 @@
         </div>
 
         <div style="margin: 20px; padding: 20px; background: #FFF9C4; border-radius: 15px; border: 2px dashed #FBC02D; text-align: center; font-family: sans-serif;">
-            <h3 style="margin: 0; color: #f57f17;">👷 Kaam Chahiye? (Join FlashFix)</h3>
-            <p style="font-size: 14px; color: #5d4037; margin: 10px 0;">
-                Agar aap Electrician hain aur hamare saath judkar kaam karna chahte hain, toh abhi Raza Sir ko contact karein!
-            </p>
+            <h3 style="margin: 0; color: #f57f17;">👷 Kaam Chahiye?</h3>
+            <p style="font-size: 14px; color: #5d4037; margin: 10px 0;">Electricians, contact Raza Sir to join our professional team!</p>
             <div style="display: flex; gap: 10px; justify-content: center;">
-                <a href="tel:9771303958" style="background: #1976D2; color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 14px;">
-                    📞 Call Sir
-                </a>
-                <a href="https://wa.me/9771303958?text=Sir, mujhe FlashFix mein as a worker join hona hai." style="background: #25D366; color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 14px;">
-                    💬 WhatsApp
-                </a>
+                <a href="tel:9771303958" style="background: #1976D2; color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 14px;">📞 Call Sir</a>
+                <a href="https://wa.me/9771303958?text=Sir, mujhe FlashFix mein join hona hai." style="background: #25D366; color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 14px;">💬 WhatsApp</a>
             </div>
         </div>
+
+        <p style="text-align: center; font-size: 11px; color: #555; margin-bottom: 20px;">
+            By booking, you agree to our 
+            <span onclick="document.getElementById('terms-modal').style.display='flex'" style="color: var(--gold); text-decoration: underline; cursor: pointer;">Terms & Conditions</span>
+        </p>
 
         <div style="padding: 20px; border-top: 1px solid #222;">
             <h3 style="color: var(--gold); font-size: 14px; text-transform: uppercase;">Customer Reviews</h3>
@@ -91,29 +85,60 @@
         </div>
     </div>
 
+    <div id="worker-reg" class="page">
+        <div class="header" style="background:none; border:none;"><button onclick="goHome()" style="background:#222; border:none; color:white; width:40px; height:40px; border-radius:50%; cursor:pointer;">←</button></div>
+        <div style="padding:20px;">
+            <h2 style="color:var(--gold);">Partner Registration</h2>
+            <p style="color:#888; font-size:14px; margin-bottom:20px;">Join the FlashFix expert team today.</p>
+            <input type="text" id="w-name" placeholder="Full Name">
+            <input type="tel" id="w-phone" placeholder="WhatsApp Number">
+            <select id="w-skill">
+                <option value="Electrician">Electrician</option>
+                <option value="Plumber">Plumber</option>
+                <option value="AC Repair">AC Repair</option>
+                <option value="Carpenter">Carpenter</option>
+                <option value="Painter">Painter</option>
+                <option value="Cleaning">Cleaning</option>
+            </select>
+            <input type="text" id="w-upi" placeholder="UPI ID (for payments)">
+            <button class="btn-action" onclick="registerWorker()">SEND APPLICATION</button>
+        </div>
+    </div>
+
+    <div id="terms-modal">
+        <div class="modal-box" style="color:#ccc; font-size:13px;">
+            <h3 style="color:var(--gold); margin-top:0;">Terms & Conditions</h3>
+            <p style="margin-bottom:10px;">1. <b>Service:</b> FlashFix is a platform connecting customers with independent workers.</p>
+            <p style="margin-bottom:10px;">2. <b>Liability:</b> <b>FlashFix (The Company) shall not be responsible for any damages, losses, or misconduct caused by the worker. All disputes must be resolved directly between the customer and the worker.</b></p>
+            <p style="margin-bottom:10px;">3. <b>Visiting Charge:</b> ₹99 fee if booking is cancelled at doorstep.</p>
+            <p style="margin-bottom:10px;">4. <b>Payment:</b> Due immediately after work completion.</p>
+            <button class="btn-action" style="margin-top:15px;" onclick="document.getElementById('terms-modal').style.display='none'">I ACCEPT</button>
+        </div>
+    </div>
+
     <div id="details-page" class="page">
-        <div class="header" style="background:none; border:none; position:absolute;"><button onclick="goHome()" style="background:#000; border:none; color:white; width:40px; height:40px; border-radius:50%; font-size:20px;">←</button></div>
-        <div class="service-banner" id="det-icon">💡</div>
-        <div class="content-area">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <h1 id="det-title" style="margin:0; font-size:28px;">Service</h1>
-                <div id="det-price" style="font-size:22px; font-weight:bold; color:var(--green);">₹199</div>
-            </div>
-            <div class="points-box">
-                <h4 style="margin-top:0; color:var(--gold);">Expert Highlights</h4>
-                <div id="det-points"></div>
-            </div>
-            <button class="btn-action" onclick="goToBooking()">BOOK THIS SERVICE</button>
+        <div class="header" style="background:none; border:none; position:absolute;"><button onclick="goHome()" style="background:#000; border:none; color:white; width:40px; height:40px; border-radius:50%; cursor:pointer;">←</button></div>
+        <div id="det-icon" style="height: 180px; background: #111; display: flex; align-items: center; justify-content: center; font-size: 60px;">💡</div>
+        <div style="padding:25px;">
+            <h1 id="det-title" style="margin:0;">Service</h1>
+            <div id="det-price" style="font-size:20px; color:var(--green); margin:10px 0;">visiting Charge ₹99</div>
+            <div id="det-points" style="color:#888; margin-bottom:30px; line-height:1.6;"></div>
+            <button class="btn-action" onclick="showPage('booking-page')">BOOK NOW</button>
         </div>
     </div>
 
     <div id="booking-page" class="page">
-        <div class="header"><h1>Booking <span>Details</span></h1></div>
-        <div style="padding:25px;">
+        <div class="header">
+            <h1 style="display:flex; align-items:center; gap:10px;">
+                <button onclick="showPage('details-page')" style="background:none; border:none; color:white; font-size:20px; cursor:pointer; padding:0;">←</button> 
+                Booking <span>Details</span>
+            </h1>
+        </div>
+        <div style="padding:20px;">
             <input type="text" id="c-name" placeholder="Full Name">
             <input type="tel" id="c-phone" placeholder="Mobile Number">
             <button id="loc-btn" onclick="getLocation()" style="background:#222; border:1px solid #333; color:white; width:100%; padding:15px; border-radius:12px; margin-bottom:10px; cursor:pointer;">📍 Share Live Location</button>
-            <textarea id="c-addr" rows="4" placeholder="House No, Landmark, Area..."></textarea>
+            <textarea id="c-addr" rows="3" placeholder="Full Address / Landmark"></textarea>
             <button class="btn-action" onclick="confirmBooking()">CONFIRM BOOKING</button>
         </div>
     </div>
@@ -121,15 +146,20 @@
     <div id="review-modal">
         <div class="modal-box">
             <h3 style="color:var(--gold); margin-top:0;">Rate Our Service</h3>
-            <input type="text" id="r-name" placeholder="Your Name">
-            <textarea id="r-msg" rows="3" placeholder="Tell us about your experience..."></textarea>
-            <button class="btn-action" onclick="sendReview()">SUBMIT REVIEW</button>
-            <p onclick="document.getElementById('review-modal').style.display='none'" style="text-align:center; color:#888; margin-top:15px; cursor:pointer;">Close</p>
+            <input type="text" id="r-name" placeholder="Name">
+            <textarea id="r-msg" rows="3" placeholder="Feedback..."></textarea>
+            <button class="btn-action" onclick="sendReview()">SUBMIT</button>
+            <p onclick="document.getElementById('review-modal').style.display='none'" style="text-align:center; color:#555; margin-top:15px; cursor:pointer;">Close</p>
         </div>
     </div>
 
     <div id="my-bookings-page" class="page">
-        <div class="header"><h1>My <span>Bookings</span></h1></div>
+        <div class="header">
+            <h1 style="display:flex; align-items:center; gap:10px;">
+                <button onclick="goHome()" style="background:none; border:none; color:white; font-size:20px; cursor:pointer; padding:0;">←</button> 
+                My <span>Bookings</span>
+            </h1>
+        </div>
         <div id="bookings-list" style="padding:20px;"></div>
         <button onclick="goHome()" class="btn-action" style="width:90%; margin: 5%;">BACK TO HOME</button>
     </div>
@@ -139,88 +169,154 @@
 <script>
     const API = "https://flashfix001.onrender.com";
     
+    // Sabhi 6 services ka data
     const serviceData = {
-        'Electrician': { icon: '💡', price: 'Visting Charge ₹99', points: ['Short circuit & Fuse repair', 'Ceiling fan & Light fitting', 'MCB & Socket installation', 'Safe background-verified experts'] },
-        'Plumber': { icon: '🚰', price: 'Visting Charge ₹99', points: ['Tap leak & Tank cleaning', 'Toilet & Basin blockage fix', 'Pipe replacement & fitting', 'Standardized rate card'] },
-        'AC Repair': { icon: '❄️', price: 'Visting Charge ₹99', points: ['Jet cleaning technology', 'Gas leak detection & refill', 'Cooling & Compressor health check', 'No-mess service promise'] },
-        'Carpenter': { icon: '🪑', price: 'Visting Charge ₹99', points: ['Door locks & Hinge repair', 'Furniture assembly & fix', 'Drawer & Cupboard repair', 'High-quality spare parts'] },
-        'Painter': { icon: '🖌️', price: 'Visting Charge ₹99', points: ['Wall putty & Texture work', 'Premium Asian Paints finish', 'Waterproofing solutions', 'Dust-free painting experience'] },
-        'Cleaning': { icon: '🧹', price: 'Visting Charge ₹99', points: ['Deep kitchen & Bathroom clean', 'Sofa & Carpet shampooing', 'Full home disinfection', 'Eco-friendly cleaning agents'] }
+        'Electrician': { icon: '💡', points: ['Fan Repair', 'Wiring & Fault finding', 'Switchboard installation'] },
+        'Plumber': { icon: '🚰', points: ['Water Leakage fix', 'Tap & Pipe Fitting', 'Tank Cleaning'] },
+        'AC Repair': { icon: '❄️', points: ['Deep Cleaning', 'Gas Fill / Check', 'Compressor Service'] },
+        'Carpenter': { icon: '🪑', points: ['Furniture Repair', 'Door & Locks fix', 'Wood assembly'] },
+        'Painter': { icon: '🖌️', points: ['Wall Paint', 'Putty Work', 'Texture & Waterproofing'] },
+        'Cleaning': { icon: '🧹', points: ['Deep Home Clean', 'Sofa & Carpet Wash', 'Bathroom deep clean'] }
     };
 
-    let selectedService = "";
-    let myLat = 0, myLon = 0;
+    let selectedService = "", myLat = 0, myLon = 0;
 
-    function goHome() { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById('home').classList.add('active'); window.scrollTo(0,0); }
-
-    function openDetails(service) {
-        selectedService = service;
-        const data = serviceData[service];
-        document.getElementById('det-title').innerText = service;
-        document.getElementById('det-price').innerText = data.price;
-        document.getElementById('det-icon').innerText = data.icon;
-        document.getElementById('det-points').innerHTML = data.points.map(p => `<div class="point"><span class="point-icon">✓</span>${p}</div>`).join('');
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById('details-page').classList.add('active');
-        window.scrollTo(0,0);
+    // Pages badalne ka function
+    function showPage(id) { 
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+        window.scrollTo(0,0); 
+    }
+    
+    function goHome() { 
+        showPage('home'); 
     }
 
-    function goToBooking() { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById('booking-page').classList.add('active'); }
+    // Service details kholne ka function
+    function openDetails(s) {
+        selectedService = s;
+        document.getElementById('det-title').innerText = s;
+        document.getElementById('det-icon').innerText = serviceData[s].icon;
+        document.getElementById('det-points').innerHTML = serviceData[s].points.map(p => `• ${p}<br>`).join('');
+        showPage('details-page');
+    }
 
+    // Location track karne ka function
     function getLocation() {
-        const btn = document.getElementById('loc-btn');
-        navigator.geolocation.getCurrentPosition((pos) => {
-            myLat = pos.coords.latitude; myLon = pos.coords.longitude;
-            btn.innerText = "✅ Location Locked!";
-            btn.style.color = "#00C853";
-        }, () => alert("Enable GPS for better service!"));
+        navigator.geolocation.getCurrentPosition(
+            p => { 
+                myLat = p.coords.latitude; 
+                myLon = p.coords.longitude; 
+                document.getElementById('loc-btn').innerText = "✅ Location Locked"; 
+                document.getElementById('loc-btn').style.color = "#00C853"; 
+            }, 
+            () => alert("Please Enable GPS for accurate service!")
+        );
     }
 
+    // Booking confirm karna
     async function confirmBooking() {
-        const n = document.getElementById('c-name').value, p = document.getElementById('c-phone').value, a = document.getElementById('c-addr').value;
-        if(!n || !p || !a) return alert("Fill all details!");
-        const res = await fetch(`${API}/book`, {
-            method: 'POST', headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ service: selectedService, phone: p, address: a + " (Name: "+n+")", lat: myLat, lon: myLon })
+        const n = document.getElementById('c-name').value;
+        const ph = document.getElementById('c-phone').value;
+        const a = document.getElementById('c-addr').value;
+        
+        if(!n || !ph || !a) return alert("Please fill all the details!");
+        
+        const res = await fetch(`${API}/book`, { 
+            method: 'POST', 
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify({
+                service: selectedService, 
+                phone: ph, 
+                address: a + " (Name: " + n + ")", 
+                lat: myLat, 
+                lon: myLon
+            }) 
         });
-        if(res.ok) { localStorage.setItem("customerPhone", p); alert("✅ Booking Done! Partner will call you."); goHome(); }
+        
+        if(res.ok) { 
+            localStorage.setItem("customerPhone", ph); 
+            alert("Booking Done! Our Partner will call you soon."); 
+            goHome(); 
+        }
     }
 
+    // Naya Worker add karna
+    async function registerWorker() {
+        const name = document.getElementById('w-name').value;
+        const phone = document.getElementById('w-phone').value;
+        const skill = document.getElementById('w-skill').value;
+        const upi = document.getElementById('w-upi').value;
+        
+        if(!name || !phone) return alert("Please fill your Name and Phone Number!");
+        
+        const res = await fetch(`${API}/add-worker-request`, { 
+            method: 'POST', 
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify({ name, phone, skill, upi }) 
+        });
+        
+        if(res.ok) { 
+            alert("Application Sent Successfully! Raza Sir will contact you soon."); 
+            goHome(); 
+        }
+    }
+
+    // Review submit karna
     async function sendReview() {
-        const n = document.getElementById('r-name').value, m = document.getElementById('r-msg').value;
-        if(!n || !m) return alert("Name & Message required!");
-        await fetch(`${API}/add-review`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({name:n, comment:m}) });
-        alert("Thanks! Your review means a lot."); location.reload();
+        const n = document.getElementById('r-name').value;
+        const m = document.getElementById('r-msg').value;
+        
+        if(!n || !m) return alert("Please fill your name and feedback!");
+        
+        await fetch(`${API}/add-review`, { 
+            method: 'POST', 
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify({name: n, comment: m}) 
+        });
+        
+        alert("Thanks for your review!");
+        location.reload();
     }
 
+    // Reviews load karna Home page par
     async function loadReviews() {
         try {
             const res = await fetch(`${API}/get-data`);
             const data = await res.json();
-            const reviews = data.reviews || [];
-            document.getElementById('reviews-list').innerHTML = reviews.reverse().slice(0, 3).map(r => `
-                <div style="border-bottom:1px solid #222; padding: 15px 0;">
+            const r = data.reviews || [];
+            document.getElementById('reviews-list').innerHTML = r.slice(-3).reverse().map(i => `
+                <div style="padding:15px 0; border-bottom:1px solid #222;">
                     <span style="color:var(--gold)">★★★★★</span><br>
-                    <p style="margin:5px 0; font-size:13px; font-style:italic; color:#ccc;">"${r.comment}"</p>
-                    <small style="color:#777;">- ${r.name}</small>
+                    <p style="margin:5px 0; font-size:13px; color:#ccc;">"${i.comment}"</p>
+                    <small style="color:var(--gold)">- ${i.name}</small>
                 </div>
-            `).join('') || "No reviews yet. Be the first!";
+            `).join('') || "<p style='color:#777; font-size:13px;'>No reviews yet. Be the first!</p>";
         } catch(e) {}
     }
 
+    // Customer ki purani bookings dikhana
     async function showMyBookings() {
-        const phone = localStorage.getItem("customerPhone") || prompt("Enter Mobile:");
+        const phone = localStorage.getItem("customerPhone") || prompt("Enter your Mobile Number:");
         if(!phone) return;
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById('my-bookings-page').classList.add('active');
-        const res = await fetch(`${API}/get-data`);
-        const data = await res.json();
-        const myJobs = data.bookings.filter(b => b.phone.includes(phone));
-        document.getElementById('bookings-list').innerHTML = myJobs.reverse().map(j => `
-            <div style="background:#111; padding:15px; border-radius:12px; margin-bottom:10px; border-left:4px solid var(--gold);">
-                <b>${j.service}</b> - <small>${j.status || 'Pending'}</small>
-            </div>
-        `).join('') || "No bookings found.";
+        
+        showPage('my-bookings-page');
+        document.getElementById('bookings-list').innerHTML = "<p style='color:#777;'>Loading...</p>";
+        
+        try {
+            const res = await fetch(`${API}/get-data`);
+            const data = await res.json();
+            const myJobs = data.bookings.filter(b => b.phone.includes(phone));
+            
+            document.getElementById('bookings-list').innerHTML = myJobs.reverse().map(j => `
+                <div style="background:#111; padding:15px; border-radius:12px; margin-bottom:10px; border-left:4px solid var(--gold);">
+                    <b style="color:white; font-size:15px;">${j.service}</b><br>
+                    <small style="color:${j.status === 'Completed' ? 'var(--green)' : '#aaa'}">${j.status || 'Pending'}</small>
+                </div>
+            `).join('') || "<p style='color:#777;'>No bookings found for this number.</p>";
+        } catch(e) {
+            document.getElementById('bookings-list').innerHTML = "<p style='color:red;'>Error loading bookings.</p>";
+        }
     }
 
     window.onload = loadReviews;
